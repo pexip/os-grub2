@@ -1,6 +1,7 @@
 grub2 (1.99-21ubuntu3.14pexip1) pexip; urgency=low
 
   * Prepare Pexip packaging
+  * Stop building efi images
 
  -- John-Mark Bell <jmb@pexip.com>  Tue, 24 Dec 2013 20:33:26 +0000
 

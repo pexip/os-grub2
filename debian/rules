@@ -260,13 +260,13 @@ override_dh_installinit:
 override_dh_strip:
 	dh_strip -X/usr/bin/grub-emu
 
-ifeq ($(DEB_HOST_ARCH),amd64)
+ifeq ($(DEB_HOST_ARCH),x-amd64)
 TARNAME := grub2_$(deb_version)_$(DEB_HOST_ARCH).tar.gz
 endif
 
 override_dh_builddeb:
 	dh_builddeb
-ifeq ($(DEB_HOST_ARCH),amd64)
+ifeq ($(DEB_HOST_ARCH),x-amd64)
 	sh debian/build-efi-images \
 		build/grub-$(COMMON_PLATFORM)/grub-mkimage \
 		build/grub-efi-amd64/grub-core \
@@ -291,7 +291,7 @@ override_dh_clean: debian/legacy/update-grub debian/grub-extras
 		rm -f debian/grub-{pc,efi-*,ieee1275,coreboot,yeeloong}{,-bin}.$$i ; \
 	done
 	rm -rf debian/tmp-*/
-ifeq ($(DEB_HOST_ARCH),amd64)
+ifeq ($(DEB_HOST_ARCH),x-amd64)
 	rm -rf debian/grub2-images
 endif
 
