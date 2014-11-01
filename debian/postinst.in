@@ -375,7 +375,7 @@ case "$1" in
       ;;
     esac
 
-    ucf --three-way --debconf-ok --sum-file=/usr/share/grub/default/grub.md5sum ${tmp_default_grub} /etc/default/grub
+    UCF_FORCE_CONFFNEW=yes ucf --three-way --debconf-ok --sum-file=/usr/share/grub/default/grub.md5sum ${tmp_default_grub} /etc/default/grub
     package="$(ucfq --with-colons /etc/default/grub | cut -d : -f 2)"
     if echo $package | grep -q "^grub-" ; then
       ucfr --force @PACKAGE@ /etc/default/grub

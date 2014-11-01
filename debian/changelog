@@ -1,3 +1,9 @@
+grub2 (1.99-21ubuntu3.14pexip4) pexip; urgency=low
+
+  * Force new configuration to be applied
+
+ -- John-Mark Bell <jmb@pexip.com>  Sat, 01 Nov 2014 02:04:42 +0000
+
 grub2 (1.99-21ubuntu3.14pexip3) pexip; urgency=low
 
   * Disable recovery menu entries
