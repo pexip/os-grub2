@@ -47,29 +47,35 @@ esac
 
 for x in /etc/default/grub /etc/default/grub.d/*.cfg ; do
   if [ -e "$x" ]; then
-    DEFAULT_FOUND="yes"
     . "$x"
   fi
 done
 
-if [ "$DEFAULT_FOUND" = "yes" ]; then
+if [ "${GRUB_CMDLINE_LINUX+set}" = set ]; then
   db_set grub2/linux_cmdline "$GRUB_CMDLINE_LINUX"
-  db_set grub2/linux_cmdline_default "$GRUB_CMDLINE_LINUX_DEFAULT"
-
-  case @PACKAGE@ in
-    grub-pc)
-      if [ "${GRUB_TIMEOUT}" != "" ]; then
-        db_set grub-pc/timeout "$GRUB_TIMEOUT"
-      fi
-      if [ "${GRUB_HIDDEN_TIMEOUT}" != "" ]; then
-        db_set grub-pc/hidden_timeout true
-      elif egrep -q '^#?[[:space:]]*GRUB_HIDDEN_TIMEOUT=' /etc/default/grub; then
-        db_set grub-pc/hidden_timeout false
-      fi
-    ;;
-  esac
 fi
+if [ "${GRUB_CMDLINE_LINUX_DEFAULT+set}" = set ]; then
+  db_set grub2/linux_cmdline_default "$GRUB_CMDLINE_LINUX_DEFAULT"
+fi
+
+case @PACKAGE@ in
+  grub-pc)
+    if [ "${GRUB_TIMEOUT}" != "" ]; then
+      db_set grub-pc/timeout "$GRUB_TIMEOUT"
+    fi
+    if [ "${GRUB_HIDDEN_TIMEOUT}" != "" ]; then
+      db_set grub-pc/hidden_timeout true
+    elif egrep -qs '^#?[[:space:]]*GRUB_HIDDEN_TIMEOUT=' /etc/default/grub; then
+      db_set grub-pc/hidden_timeout false
+    fi
+  ;;
+esac
 
 db_input ${priority} grub2/linux_cmdline || true
 db_input medium grub2/linux_cmdline_default || true
+case @PACKAGE@ in
+  grub-*efi*)
+    db_input low grub2/force_efi_extra_removable || true
+  ;;
+esac
 db_go

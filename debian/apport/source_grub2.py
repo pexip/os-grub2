@@ -1,3 +1,4 @@
+# vim: set fileencoding=UTF-8 :
 '''apport package hook for grub2
 
 Author: Jean-Baptiste Lallement <jeanbaptiste.lallement@gmail.com>
@@ -8,6 +9,9 @@ Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.  See http://www.gnu.org/copyleft/gpl.html for
 the full text of the license.
 '''
+
+from __future__ import print_function
+
 from apport.hookutils import *
 import os
 import subprocess
@@ -16,8 +20,8 @@ import re
 def check_shell_syntax(path):
     ''' Check the syntax of a shell script '''
     try:
-        subprocess.check_call(['/bin/sh', '-n', path],
-                              stderr=open(os.devnull,'w'))
+        with open(os.devnull, 'w') as devnull:
+            subprocess.check_call(['/bin/sh', '-n', path], stderr=devnull)
     except subprocess.CalledProcessError:
         return False
     return True
@@ -40,29 +44,19 @@ def check_shell_syntax_harder(path):
         # Unfortunately this test may involve executing code.  However, this
         # file is already sourced as root when running update-grub, so it
         # seems unlikely that this could do any further harm.
-        subprocess.check_call(['/bin/sh', '-ec', '. %s' % re.escape(path)],
-                              stderr=open(os.devnull,'w'))
+        with open(os.devnull, 'w') as devnull:
+            subprocess.check_call(
+                ['/bin/sh', '-ec', '. %s' % re.escape(path)], stderr=devnull)
     except subprocess.CalledProcessError:
         return False
     return True
 
-def _attach_file_filtered(report, path, key=None):
-    '''filter out password from grub configuration'''
-    if not key:
-        key = path_to_key(path)
-
-    if os.path.exists(path):
-        with open(path,'r') as f:
-            filtered = [l if not l.startswith('password')
-                        else '### PASSWORD LINE REMOVED ###'
-                        for l in f.readlines()]
-            report[key] = ''.join(filtered)
 
 def add_info(report):
     if report['ProblemType'] == 'Package':
         # To detect if root fs is a loop device
         attach_file(report, '/proc/cmdline','ProcCmdLine')
-        _attach_file_filtered(report, '/etc/default/grub','EtcDefaultGrub')
+        attach_default_grub(report, 'EtcDefaultGrub')
         attach_file_if_exists(report, '/boot/grub/device.map', 'DeviceMap')
         try:
             grub_d = '/etc/default/grub.d'
@@ -97,6 +91,6 @@ if __name__ == '__main__':
     r = {}
     r['ProblemType'] = 'Package'
     add_info(r)
-    for k, v in r.iteritems():
-        print '%s: "%s"' % (k, v)
-        print "========================================"
+    for k, v in r.items():
+        print('%s: "%s"' % (k, v))
+        print("========================================")
