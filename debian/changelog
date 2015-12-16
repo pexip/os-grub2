@@ -1,3 +1,54 @@
+grub2 (1.99-21ubuntu3.19pexip1) pexip; urgency=low
+
+  * New upstream release
+
+ -- John-Mark Bell <jmb@pexip.com>  Wed, 16 Dec 2015 16:12:53 +0000
+
+grub2 (1.99-21ubuntu3.19) precise-security; urgency=medium
+
+  * SECURITY UPDATE: password bypass via backspace key buffer overflow
+    - debian/patches/CVE-2015-8370.patch: check length before accepting a
+      backspace character in grub-core/lib/crypto.c,
+      grub-core/normal/auth.c.
+    - CVE-2015-8370
+
+ -- Marc Deslauriers <marc.deslauriers@ubuntu.com>  Tue, 15 Dec 2015 09:14:45 -0500
+
+grub2 (1.99-21ubuntu3.18) precise; urgency=medium
+
+  * Do not hang headless servers indefinitely on boot after edge case power
+    failure timing (LP: #1443735). Instead, time out after 30 seconds and boot
+    anyway, including on non-headless systems.
+
+ -- Robie Basak <robie.basak@ubuntu.com>  Tue, 19 May 2015 12:22:34 +0100
+
+grub2 (1.99-21ubuntu3.17) precise; urgency=medium
+
+  * Fix infinite recursion in gettext when translation fails
+    (LP: #1073108)
+
+ -- Louis Bouchard <louis.bouchard@ubuntu.com>  Wed, 17 Sep 2014 13:42:52 +0100
+
+grub2 (1.99-21ubuntu3.16) precise; urgency=medium
+
+  * Backport from upstream:
+    - Avoid grub_util_biosdisk_is_floppy crash on other disk types
+      (LP: #1336946).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 03 Jul 2014 11:51:00 +0100
+
+grub2 (1.99-21ubuntu3.15) precise; urgency=low
+
+  [ Colin Watson ]
+  * Backport from upstream:
+    - Fix sector number when writing to non-512B disks (LP: #1253443).
+
+  [ Yang Bai ]
+  * Backport from upstream:
+    - Support high resolution for grub terminal (LP: #1297128).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 20 May 2014 10:52:20 +0100
+
 grub2 (1.99-21ubuntu3.14pexip5) pexip; urgency=low
 
   * SECURITY UPDATE: ensure grub.cfg is not world readable if
