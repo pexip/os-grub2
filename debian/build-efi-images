@@ -60,17 +60,76 @@ else
 fi
 EOF
 
+cat >"$workdir/grub-netboot.cfg" <<EOF
+if [ -e \$prefix/$platform/grub.cfg ]; then
+	source \$prefix/$platform/grub.cfg
+else
+	source \$prefix/grub.cfg
+fi
+EOF
+
 mkfs.msdos -C "$workdir/memdisk.fat" 64
 mcopy -i "$workdir/memdisk.fat" "$workdir/grub.cfg" ::grub.cfg
 
+mkfs.msdos -C "$workdir/memdisk-netboot.fat" 64
+mcopy -i "$workdir/memdisk-netboot.fat" "$workdir/grub-netboot.cfg" ::grub.cfg
+
 CD_MODULES="
-	boot btrfs cat chain configfile echo efifwsetup
-	efi_gop efi_uga ext2 fat font gfxmenu gfxterm gzio halt hfsplus
-	iso9660 jpeg keystatus loadenv linux linuxefi memdisk minicmd
-	normal part_apple part_msdos part_gpt password_pbkdf2 png
-	reboot search search_fs_uuid search_fs_file search_label sleep
-	test video video_bochs video_cirrus"
-GRUB_MODULES="$CD_MODULES lvm mdraid09 mdraid1x"
+	all_video
+	boot
+	btrfs
+	cat
+	chain
+	configfile
+	echo
+	efifwsetup
+	efinet
+	ext2
+	fat
+	font
+	gettext
+	gfxmenu
+	gfxterm
+	gfxterm_background
+	gzio
+	halt
+	hfsplus
+	iso9660
+	jpeg
+	keystatus
+	loadenv
+	linux
+	linuxefi
+	lsefi
+	lsefimmap
+	lsefisystab
+	lssal
+	memdisk
+	minicmd
+	normal
+	part_apple
+	part_msdos
+	part_gpt
+	password_pbkdf2
+	png
+	reboot
+	search
+	search_fs_uuid
+	search_fs_file
+	search_label
+	sleep
+	test
+	true
+	video
+	"
+GRUB_MODULES="$CD_MODULES
+	lvm
+	mdraid09
+	mdraid1x
+	"
+NET_MODULES="$CD_MODULES
+	tftp
+	"
 
 "$grub_mkimage" -O "$platform" -o "$outdir/gcd$efi_name.efi" \
 	-d "$grub_core" \
@@ -79,5 +138,8 @@ GRUB_MODULES="$CD_MODULES lvm mdraid09 mdraid1x"
 	$CD_MODULES
 "$grub_mkimage" -O "$platform" -o "$outdir/grub$efi_name.efi" \
 	-d "$grub_core" -p /EFI/ubuntu $GRUB_MODULES
+"$grub_mkimage" -O "$platform" -o "$outdir/grubnet$efi_name.efi" \
+	-d "$grub_core" -c "$workdir/grub-bootstrap.cfg" \
+	-m "$workdir/memdisk-netboot.fat" -p /grub $NET_MODULES
 
 exit 0

@@ -1,58 +1,42 @@
-This package uses quilt to manage all modifications to the upstream
-source.  Changes are stored in the source package as diffs in
-debian/patches and applied during the build.
+Git Tree
+========
 
-To configure quilt to use debian/patches instead of patches, you want
-either to export QUILT_PATCHES=debian/patches in your environment
-or use this snippet in your ~/.quiltrc:
+The grub2 packaging is maintained via the pkg-grub project on alioth:
+https://alioth.debian.org/projects/pkg-grub/
 
-    for where in ./ ../ ../../ ../../../ ../../../../ ../../../../../; do
-        if [ -e ${where}debian/rules -a -d ${where}debian/patches ]; then
-                export QUILT_PATCHES=debian/patches
-                break
-        fi
-    done
+The primary git tree is pkg-grub/grub.git. It can be obtained with:
 
-To get the fully patched source after unpacking the source package, cd to
-the root level of the source package and run:
+     git clone git://anonscm.debian.org/pkg-grub/grub.git
 
-    quilt push -a
+Git Submodules
+--------------
 
-The last patch listed in debian/patches/series will become the current
-patch.
+grub.git/debian/grub-extras is maintained as a git submodule. After
+cloning the main repository you should run:
 
-To add a new set of changes, first run quilt push -a, and then run:
+    git submodule update --init
 
-    quilt new <patch>
+To initialise this tree. See git-submodule(1) for more info.
 
-where <patch> is a descriptive name for the patch, used as the filename in
-debian/patches.  Then, for every file that will be modified by this patch,
-run:
+If you are using a tool such as git-buildpackage(1) then you will need to tell
+it explicitly that it needs to consider submodules, by passing the
+--git-submodules option.
 
-    quilt add <file>
+Git Branches
+------------
 
-before editing those files.  You must tell quilt with quilt add what files
-will be part of the patch before making changes or quilt will not work
-properly.  After editing the files, run:
+pkg-grub/grub.git uses git-dpm and contains the following branches:
 
-    quilt refresh
+- upstream:
 
-to save the results as a patch.
+  The master branch of the upstream grub.git tree, at the point
+  corresponding to the current Debian package version.
 
-Alternately, if you already have an external patch and you just want to
-add it to the build system, run quilt push -a and then:
+- master:
 
-    quilt import -P <patch> /path/to/patch
-    quilt push -a
+  The main packaging branch, based on upstream. debian/patches
+  maintained using git-dpm.
 
-(add -p 0 to quilt import if needed). <patch> as above is the filename to
-use in debian/patches.  The last quilt push -a will apply the patch to
-make sure it works properly.
+- pristine-tar:
 
-To remove an existing patch from the list of patches that will be applied,
-run:
-
-    quilt delete <patch>
-
-You may need to run quilt pop -a to unapply patches first before running
-this command.
+  pritine-tar metadata based on upstream (not upstream).
