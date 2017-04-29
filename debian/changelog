@@ -1,11 +1,13 @@
 grub2 (2.02~beta2-22+deb8u1pexip1) pexip; urgency=low
 
   * Migrate to Jessie
-  * debian/postinst: Force new configuration to be applied
+  * debian/postinst.in: Force new configuration to be applied
   * debian/default/grub:
     - Disable recovery menu entries
     - Ensure boot menu times out after unclean shutdown.
   * debian/rules: Stop building efi images
+  * debian/postinst.in: Clean out garbage device.map; forcibly
+    run grub-install on upgrade
 
  -- John-Mark Bell <jmb@pexip.com>  Wed, 22 Feb 2017 19:53:45 +0000
 

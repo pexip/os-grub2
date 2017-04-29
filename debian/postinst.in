@@ -366,6 +366,14 @@ case "$1" in
       sed -i '/\/md-uuid-/d' /boot/grub/device.map
     fi
 
+    if test -z "$devicemap_regenerated" && \
+       dpkg --compare-versions "$2" lt-nl 2.02~beta2-22+deb8u1pexip1 && \
+       grep -qs /dev/loop /boot/grub/device.map; then
+      # Old image builds left a junk device.map lying around. Remove it.
+      echo "Removing bogus device.map" >&2
+      rm -f /boot/grub/device.map
+    fi
+
     tmp_default_grub="$(mktemp -t grub.XXXXXXXXXX)"
     trap "rm -f ${tmp_default_grub}" EXIT
     cp -p /usr/share/grub/default/grub ${tmp_default_grub}
@@ -589,9 +597,13 @@ case "$1" in
             done
             db_subst "$question" RAW_CHOICES "$ids"
             db_subst "$question" CHOICES "$descriptions"
-            db_input "$priority" "$question" || true
+            db_input "$priority" "$question" || noninteractive="1"
             db_go
             db_get "$question"
+            if [ -z "$RET" ] && [ -n "$2" ] && [ -n "$noninteractive" ]; then
+                # Forcibly install on upgrade if noninteractive
+                RET=${ids%%,*}
+            fi
             failed_devices=
             for i in `echo $RET | sed -e 's/, / /g'` ; do
               real_device="$(readlink -f "$i")"
