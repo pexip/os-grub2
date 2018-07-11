@@ -296,7 +296,14 @@ config_item()
 
 running_in_container()
 {
-  type running-in-container >/dev/null 2>&1 && running-in-container >/dev/null
+  type systemd-detect-virt >/dev/null 2>&1 && systemd-detect-virt --quiet --container
+}
+
+no_nvram_arg() {
+    db_get grub2/update_nvram
+    if [ "$RET" = false ]; then
+        echo "--no-nvram"
+    fi
 }
 
 run_grub_install()
@@ -310,15 +317,6 @@ run_grub_install()
 case "$1" in
   configure)
     . /usr/share/debconf/confmodule
-
-    if dpkg --compare-versions "$2" lt-nl 1.99-1; then
-      # Force dpkg to replace this directory with a symlink.
-      if [ ! -L /usr/share/doc/@PACKAGE@ ] && [ -d /usr/share/doc/@PACKAGE@ ]; then
-        if rmdir /usr/share/doc/@PACKAGE@ 2>/dev/null; then
-          ln -sf grub-common /usr/share/doc/@PACKAGE@
-        fi
-      fi
-    fi
 
     devicemap_regenerated=
 
@@ -719,7 +717,8 @@ case "$1" in
           if [ "$RET" = true ]; then
             FORCE_EXTRA_REMOVABLE="--force-extra-removable"
           fi
-          run_grub_install --target="$target" "$FORCE_EXTRA_REMOVABLE"
+          NO_NVRAM="$(no_nvram_arg)"
+          run_grub_install --target="$target" "$FORCE_EXTRA_REMOVABLE" "$NO_NVRAM"
         fi
 
         # /boot/grub/ has more chances of being accessible by GRUB
@@ -729,6 +728,10 @@ case "$1" in
             cp $i /boot/grub/
           fi
         done
+
+        if type update-secureboot-policy >/dev/null 2>&1; then
+          update-secureboot-policy || true
+        fi
       ;;
 
       grub-ieee1275)
@@ -737,7 +740,8 @@ case "$1" in
             # Output may be empty; if so, just update the core image but
             # don't install it to any PReP partition.
             prep_bootdev="$(/usr/lib/grub/powerpc-ieee1275/prep-bootdev)"
-            run_grub_install --target=powerpc-ieee1275 $prep_bootdev
+            NO_NVRAM="$(no_nvram_arg)"
+            run_grub_install --target=powerpc-ieee1275 $prep_bootdev "$NO_NVRAM"
           ;;
         esac
       ;;

@@ -1,13 +1,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>, 2012.
+# Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>, 2012, 2015.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2014-12-13 20:23+0000\n"
-"PO-Revision-Date: 2012-05-25 12:10+0300\n"
+"POT-Creation-Date: 2017-01-20 00:29+0000\n"
+"PO-Revision-Date: 2015-02-10 21:14+0200\n"
 "Last-Translator: Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>\n"
 "Language-Team: Latvian <lata-l10n@googlegroups.com>\n"
 "Language: lv\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : "
 "2);\n"
-"X-Generator: Lokalize 1.4\n"
+"X-Generator: Lokalize 1.5\n"
 
 #. Type: boolean
 #. Description
@@ -333,7 +333,7 @@ msgstr ""
 #. Description
 #: ../templates.in:3001
 msgid "Force extra installation to the EFI removable media path?"
-msgstr ""
+msgstr "Forsēt papildu instalāciju uz EFI noņemamā datu nesēja ceļa?"
 
 #. Type: boolean
 #. Description
@@ -347,16 +347,40 @@ msgid ""
 "make sure that GRUB is configured successfully to be able to boot any other "
 "OS installations correctly."
 msgstr ""
+"Dažas EFI sistēmas ir satur kļūdas un nespēj pareizi apstrādāt jaunus "
+"sistēmas ielādētājus. Ja forsēsiet GRUB instalēšanu uz EFI noņemamā datu "
+"nesēja ceļa, tam vajadzētu pārliecināties, ka šī sistēma pareizi ielādēs "
+"Debian, neskatoties uz šādām problēmām. Bet tas var liegt iespēju ielādēt "
+"jebkuru citu operētājsistēmu, kas ir atkarīga no šī ceļa. Ja tā, jums būs "
+"jāpārliecinās, ka GRUB ir veiksmīgi nokonfigurēts un varēs veiksmīgi ielādēt "
+"citas OS instalācijas."
+
+#. Type: boolean
+#. Description
+#: ../templates.in:4001
+msgid "Update NVRAM variables to automatically boot into Debian?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../templates.in:4001
+msgid ""
+"GRUB can configure your platform's NVRAM variables so that it boots into "
+"Debian automatically when powered on. However, you may prefer to disable "
+"this behavior and avoid changes to your boot configuration. For example, if "
+"your NVRAM variables have been set up such that your system contacts a PXE "
+"server on every boot, this would preserve that behavior."
+msgstr ""
 
 #. Type: string
 #. Description
-#: ../templates.in:4001
+#: ../templates.in:5001
 msgid "kFreeBSD command line:"
 msgstr "kFreeBSD komandrinda:"
 
 #. Type: string
 #. Description
-#: ../templates.in:4001
+#: ../templates.in:5001
 msgid ""
 "The following kFreeBSD command line was extracted from /etc/default/grub or "
 "the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
@@ -368,13 +392,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../templates.in:5001
+#: ../templates.in:6001
 msgid "kFreeBSD default command line:"
 msgstr "kFreeBSD noklusējuma komandrinda:"
 
 #. Type: string
 #. Description
-#: ../templates.in:5001
+#: ../templates.in:6001
 msgid ""
 "The following string will be used as kFreeBSD parameters for the default "
 "menu entry but not for the recovery mode."
@@ -384,13 +408,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates.in:6001
+#: ../templates.in:7001
 msgid "/boot/grub/device.map has been regenerated"
 msgstr "/boot/grub/device.map tika reģistrēts"
 
 #. Type: note
 #. Description
-#: ../templates.in:6001
+#: ../templates.in:7001
 msgid ""
 "The file /boot/grub/device.map has been rewritten to use stable device "
 "names. In most cases, this should significantly reduce the need to change it "
@@ -403,7 +427,7 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates.in:6001
+#: ../templates.in:7001
 msgid ""
 "However, since more than one disk is present in the system, it is possible "
 "that the system is depending on the old device map. Please check whether "
@@ -417,7 +441,7 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates.in:6001
+#: ../templates.in:7001
 msgid ""
 "If you do not understand this message, or if there are no custom boot menu "
 "entries, you can ignore this message."
