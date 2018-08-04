@@ -65,6 +65,11 @@ BUILD_PACKAGES += grub-none
 endif
 
 ifeq (yes,$(shell dpkg-vendor --derives-from Ubuntu && echo yes))
+ifeq (yes,$(shell dpkg-vendor --derives-from Pexip && echo yes))
+DEFAULT_CMDLINE := quiet splash
+DEFAULT_TIMEOUT := 10
+FLICKER_FREE_BOOT := no
+else
 DEFAULT_CMDLINE := quiet splash
 DEFAULT_TIMEOUT := 10
 ifeq ($(DEB_HOST_ARCH_CPU),ppc64el)
@@ -73,6 +78,7 @@ else
 FLICKER_FREE_BOOT := yes
 endif
 confflags += --enable-ubuntu-recovery
+endif
 else ifeq (yes,$(shell dpkg-vendor --derives-from Tanglu && echo yes))
 DEFAULT_CMDLINE := quiet splash
 DEFAULT_TIMEOUT := 10
