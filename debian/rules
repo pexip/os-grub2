@@ -66,7 +66,7 @@ endif
 
 ifeq (yes,$(shell dpkg-vendor --derives-from Ubuntu && echo yes))
 ifeq (yes,$(shell dpkg-vendor --derives-from Pexip && echo yes))
-DEFAULT_CMDLINE := quiet splash
+DEFAULT_CMDLINE :=
 DEFAULT_TIMEOUT := 10
 FLICKER_FREE_BOOT := no
 else
