@@ -64,12 +64,11 @@ COMMON_PLATFORM := none
 BUILD_PACKAGES += grub-none
 endif
 
-ifeq (yes,$(shell dpkg-vendor --derives-from Ubuntu && echo yes))
 ifeq (yes,$(shell dpkg-vendor --derives-from Pexip && echo yes))
 DEFAULT_CMDLINE :=
 DEFAULT_TIMEOUT := 10
-FLICKER_FREE_BOOT := no
-else
+FLICKER_FREE_BOOT := partial
+else ifeq (yes,$(shell dpkg-vendor --derives-from Ubuntu && echo yes))
 DEFAULT_CMDLINE := quiet splash
 DEFAULT_TIMEOUT := 10
 ifeq ($(DEB_HOST_ARCH_CPU),ppc64el)
@@ -78,7 +77,6 @@ else
 FLICKER_FREE_BOOT := yes
 endif
 confflags += --enable-ubuntu-recovery
-endif
 else ifeq (yes,$(shell dpkg-vendor --derives-from Tanglu && echo yes))
 DEFAULT_CMDLINE := quiet splash
 DEFAULT_TIMEOUT := 10
@@ -100,6 +98,11 @@ confflags += \
 substvars += \
 	-Vlsb-base-depends="lsb-base (>= 3.0-6)" \
 	-Vgfxpayload-depends="grub-gfxpayload-lists [any-i386 any-amd64]"
+else ifeq ($(FLICKER_FREE_BOOT),partial)
+DEFAULT_HIDDEN_TIMEOUT := 0
+DEFAULT_HIDDEN_TIMEOUT_BOOL := true
+confflags += \
+	--enable-quick-boot
 else
 DEFAULT_HIDDEN_TIMEOUT :=
 DEFAULT_HIDDEN_TIMEOUT_BOOL := false
@@ -460,7 +463,7 @@ override_dh_installdocs:
 	dh_installdocs $(patsubst %,-p%,$(filter grub-common grub-rescue-pc grub-firmware-qemu grub-xen-host,$(BUILD_PACKAGES))) -A AUTHORS NEWS README THANKS TODO
 	dh_installdocs --remaining-packages --link-doc=grub-common
 
-ifeq ($(FLICKER_FREE_BOOT),yes)
+ifneq (,$(filter yes partial,$(FLICKER_FREE_BOOT)))
 override_dh_installinit:
 	dh_installinit -- start 99 2 3 4 5 .
 else
