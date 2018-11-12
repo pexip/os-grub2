@@ -1,3 +1,17 @@
+grub2 (2.02~beta3-5+deb9u1pexip1) pexip; urgency=medium
+
+  * New upstream release
+
+ -- John-Mark Bell <jmb@pexip.com>  Mon, 12 Nov 2018 19:12:31 +0000
+
+grub2 (2.02~beta3-5+deb9u1) stable; urgency=medium
+
+  * grub-mknetdir: Add support for ARM64 EFI (closes: #871772).
+  * Cherry-pick upstream patch to change the default TSC calibration method
+    to pmtimer on EFI systems (closes: #908852).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 28 Oct 2018 19:18:13 +0000
+
 grub2 (2.02~beta3-5pexip1) pexip; urgency=medium
 
   * Migrate to Stretch
