@@ -1,4 +1,4 @@
-From f088c5a77750ef243888de09fd8cc979da9244bb Mon Sep 17 00:00:00 2001
+From 8b643f33f749ba56ba06a745a571bb6b76dbf3dd Mon Sep 17 00:00:00 2001
 From: "David E. Box" <david.e.box@linux.intel.com>
 Date: Fri, 15 Sep 2017 15:37:05 -0700
 Subject: tsc: Change default tsc calibration method to pmtimer on EFI systems
@@ -12,7 +12,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
 
 Origin: upstream, https://git.savannah.gnu.org/cgit/grub.git/commit/?id=446794de8da4329ea532cbee4ca877bcafd0e534
 Bug-Debian: https://bugs.debian.org/883193
-Last-Update: 2018-10-28
+Last-Update: 2017-12-01
 
 Patch-Name: tsc_efi_default_to_pmtimer.patch
 ---
