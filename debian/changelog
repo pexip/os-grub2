@@ -1,3 +1,9 @@
+grub2 (2.02+dfsg1-20pexip2) pexip; urgency=medium
+
+  * Disable parallel building, the package is not safe to use it
+
+ -- Steve McIntyre <steve.mcintyre@pexip.com>  Fri, 24 Jul 2020 14:34:40 +0100
+
 grub2 (2.02+dfsg1-20pexip1) pexip; urgency=medium
 
   * Migrate to Buster
