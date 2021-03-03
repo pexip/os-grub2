@@ -1,6 +1,9 @@
 grub2 (2.02+dfsg1-20+deb10u4pexip1) pexip; urgency=medium
 
   * New upstream release
+  * Fix a couple of minor build issues from the security update
+    (already shared in the Debian packaging, will come in the next
+    release there)
 
  -- Steve McIntyre <steve.mcintyre@pexip.com>  Wed, 03 Mar 2021 10:40:01 +0000
 
