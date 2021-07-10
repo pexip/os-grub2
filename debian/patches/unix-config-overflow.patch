@@ -1,4 +1,4 @@
-From b72bf775684bd30e77818250f8a3450a4bc2f33d Mon Sep 17 00:00:00 2001
+From a0c8532b48cc452d2afd7d27f05c43c68b7b3f5e Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@debian.org>
 Date: Fri, 24 Jul 2020 11:27:01 +0100
 Subject: unix/config: Fix integer overflow in grub_util_load_config

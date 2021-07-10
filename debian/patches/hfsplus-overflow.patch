@@ -1,4 +1,4 @@
-From f6048f348b319e52d540c33e89d08733428268b2 Mon Sep 17 00:00:00 2001
+From 2db482b906c425aa755fc78e8e8980659b92f5a1 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Sun, 19 Jul 2020 14:43:31 -0400
 Subject: hfsplus: fix two more overflows
@@ -17,7 +17,7 @@ Patch-Name: hfsplus-overflow.patch
  1 file changed, 8 insertions(+), 3 deletions(-)
 
 diff --git a/grub-core/fs/hfsplus.c b/grub-core/fs/hfsplus.c
-index f16323e7e..6a585b9e6 100644
+index dae43becc..9c4e4c88c 100644
 --- a/grub-core/fs/hfsplus.c
 +++ b/grub-core/fs/hfsplus.c
 @@ -31,6 +31,7 @@
@@ -42,7 +42,7 @@ index f16323e7e..6a585b9e6 100644
    if (!symlink)
      return 0;
  
-@@ -714,8 +719,8 @@ list_nodes (void *record, void *hook_arg)
+@@ -715,8 +720,8 @@ list_nodes (void *record, void *hook_arg)
    if (type == GRUB_FSHELP_UNKNOWN)
      return 0;
  

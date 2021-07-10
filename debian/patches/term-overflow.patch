@@ -1,4 +1,4 @@
-From a4dbd581fca9d209b5fc2cfe33076ff2c823bd5e Mon Sep 17 00:00:00 2001
+From 2328abbe2caa2129084da04a3e19461ddc571549 Mon Sep 17 00:00:00 2001
 From: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
 Date: Tue, 7 Jul 2020 15:12:25 -0400
 Subject: term: Fix overflow on user inputs
@@ -29,7 +29,7 @@ Patch-Name: term-overflow.patch
  1 file changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/grub-core/term/terminfo.c b/grub-core/term/terminfo.c
-index 7cb7909c8..aea9ffd0a 100644
+index 63892ad42..aa3a108ca 100644
 --- a/grub-core/term/terminfo.c
 +++ b/grub-core/term/terminfo.c
 @@ -398,7 +398,7 @@ grub_terminfo_getwh (struct grub_term_output *term)
@@ -61,4 +61,4 @@ index 7cb7909c8..aea9ffd0a 100644
 +			 GRUB_TERMINFO_READKEY_MAX_LEN, data->readkey);
  
  #if defined(__powerpc__) && defined(GRUB_MACHINE_IEEE1275)
-   if (data->npending == 1 && data->input_buf[0] == '\e'
+   if (data->npending == 1 && data->input_buf[0] == GRUB_TERM_ESC

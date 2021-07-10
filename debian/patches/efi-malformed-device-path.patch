@@ -1,4 +1,4 @@
-From a11b42297751285e4ca6751ffe054a692dc39c0d Mon Sep 17 00:00:00 2001
+From 9735a4b2f52caf79e5804ca3e959f0f444a8716c Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Sun, 19 Jul 2020 16:53:27 -0400
 Subject: efi: fix some malformed device path arithmetic errors.
@@ -26,10 +26,10 @@ Patch-Name: efi-malformed-device-path.patch
  4 files changed, 88 insertions(+), 21 deletions(-)
 
 diff --git a/grub-core/kern/efi/efi.c b/grub-core/kern/efi/efi.c
-index 778f39524..0de1f9fad 100644
+index ad170c7ce..e12261fd5 100644
 --- a/grub-core/kern/efi/efi.c
 +++ b/grub-core/kern/efi/efi.c
-@@ -348,7 +348,7 @@ grub_efi_get_filename (grub_efi_device_path_t *dp0)
+@@ -360,7 +360,7 @@ grub_efi_get_filename (grub_efi_device_path_t *dp0)
  
    dp = dp0;
  
@@ -38,7 +38,7 @@ index 778f39524..0de1f9fad 100644
      {
        grub_efi_uint8_t type = GRUB_EFI_DEVICE_PATH_TYPE (dp);
        grub_efi_uint8_t subtype = GRUB_EFI_DEVICE_PATH_SUBTYPE (dp);
-@@ -358,9 +358,15 @@ grub_efi_get_filename (grub_efi_device_path_t *dp0)
+@@ -370,9 +370,15 @@ grub_efi_get_filename (grub_efi_device_path_t *dp0)
        if (type == GRUB_EFI_MEDIA_DEVICE_PATH_TYPE
  	       && subtype == GRUB_EFI_FILE_PATH_DEVICE_PATH_SUBTYPE)
  	{
@@ -57,7 +57,7 @@ index 778f39524..0de1f9fad 100644
  	  filesize += GRUB_MAX_UTF8_PER_UTF16 * len + 2;
  	}
  
-@@ -376,7 +382,7 @@ grub_efi_get_filename (grub_efi_device_path_t *dp0)
+@@ -388,7 +394,7 @@ grub_efi_get_filename (grub_efi_device_path_t *dp0)
    if (!name)
      return NULL;
  
@@ -66,7 +66,7 @@ index 778f39524..0de1f9fad 100644
      {
        grub_efi_uint8_t type = GRUB_EFI_DEVICE_PATH_TYPE (dp);
        grub_efi_uint8_t subtype = GRUB_EFI_DEVICE_PATH_SUBTYPE (dp);
-@@ -391,8 +397,15 @@ grub_efi_get_filename (grub_efi_device_path_t *dp0)
+@@ -404,8 +410,15 @@ grub_efi_get_filename (grub_efi_device_path_t *dp0)
  
  	  *p++ = '/';
  
@@ -84,7 +84,7 @@ index 778f39524..0de1f9fad 100644
  	  fp = (grub_efi_file_path_device_path_t *) dp;
  	  /* According to EFI spec Path Name is NULL terminated */
  	  while (len > 0 && fp->path_name[len - 1] == 0)
-@@ -458,7 +471,26 @@ grub_efi_duplicate_device_path (const grub_efi_device_path_t *dp)
+@@ -480,7 +493,26 @@ grub_efi_duplicate_device_path (const grub_efi_device_path_t *dp)
         ;
         p = GRUB_EFI_NEXT_DEVICE_PATH (p))
      {
@@ -112,7 +112,7 @@ index 778f39524..0de1f9fad 100644
        if (GRUB_EFI_END_ENTIRE_DEVICE_PATH (p))
  	break;
      }
-@@ -503,7 +535,7 @@ dump_vendor_path (const char *type, grub_efi_vendor_device_path_t *vendor)
+@@ -525,7 +557,7 @@ dump_vendor_path (const char *type, grub_efi_vendor_device_path_t *vendor)
  void
  grub_efi_print_device_path (grub_efi_device_path_t *dp)
  {
@@ -121,7 +121,7 @@ index 778f39524..0de1f9fad 100644
      {
        grub_efi_uint8_t type = GRUB_EFI_DEVICE_PATH_TYPE (dp);
        grub_efi_uint8_t subtype = GRUB_EFI_DEVICE_PATH_SUBTYPE (dp);
-@@ -904,7 +936,11 @@ grub_efi_compare_device_paths (const grub_efi_device_path_t *dp1,
+@@ -937,7 +969,11 @@ grub_efi_compare_device_paths (const grub_efi_device_path_t *dp1,
      /* Return non-zero.  */
      return 1;
  
@@ -134,7 +134,7 @@ index 778f39524..0de1f9fad 100644
      {
        grub_efi_uint8_t type1, type2;
        grub_efi_uint8_t subtype1, subtype2;
-@@ -940,5 +976,16 @@ grub_efi_compare_device_paths (const grub_efi_device_path_t *dp1,
+@@ -973,5 +1009,16 @@ grub_efi_compare_device_paths (const grub_efi_device_path_t *dp1,
        dp2 = (grub_efi_device_path_t *) ((char *) dp2 + len2);
      }
  
@@ -152,7 +152,7 @@ index 778f39524..0de1f9fad 100644
    return 0;
  }
 diff --git a/grub-core/loader/efi/chainloader.c b/grub-core/loader/efi/chainloader.c
-index adc856366..14679759b 100644
+index daf8c6b54..978fab002 100644
 --- a/grub-core/loader/efi/chainloader.c
 +++ b/grub-core/loader/efi/chainloader.c
 @@ -116,6 +116,12 @@ copy_file_path (grub_efi_file_path_device_path_t *fp,
@@ -165,10 +165,10 @@ index adc856366..14679759b 100644
 +      return;
 +    }
 +
-   size = grub_utf8_to_utf16 (fp->path_name, len * GRUB_MAX_UTF16_PER_UTF8,
- 			     (const grub_uint8_t *) str, len, 0);
-   for (p = fp->path_name; p < fp->path_name + size; p++)
-@@ -150,9 +156,18 @@ make_file_path (grub_efi_device_path_t *dp, const char *filename)
+   path_name = grub_calloc (len, GRUB_MAX_UTF16_PER_UTF8 * sizeof (*path_name));
+   if (!path_name)
+     return;
+@@ -156,9 +162,18 @@ make_file_path (grub_efi_device_path_t *dp, const char *filename)
  
    size = 0;
    d = dp;
@@ -190,7 +190,7 @@ index adc856366..14679759b 100644
  	break;
        d = GRUB_EFI_NEXT_DEVICE_PATH (d);
 diff --git a/grub-core/loader/i386/xnu.c b/grub-core/loader/i386/xnu.c
-index c760db30f..44f7ebfa2 100644
+index e9e119259..a70093607 100644
 --- a/grub-core/loader/i386/xnu.c
 +++ b/grub-core/loader/i386/xnu.c
 @@ -515,14 +515,15 @@ grub_cmd_devprop_load (grub_command_t cmd __attribute__ ((unused)),
@@ -214,7 +214,7 @@ index c760db30f..44f7ebfa2 100644
        dev = grub_xnu_devprop_add_device (dpstart, (char *) buf
  					 - (char *) dpstart);
 diff --git a/include/grub/efi/api.h b/include/grub/efi/api.h
-index 99ba068e3..952d78aa2 100644
+index 75befd10e..a3f4df91d 100644
 --- a/include/grub/efi/api.h
 +++ b/include/grub/efi/api.h
 @@ -635,6 +635,7 @@ typedef struct grub_efi_device_path grub_efi_device_path_protocol_t;

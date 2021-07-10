@@ -1,4 +1,4 @@
-From 35c865195b18d0dcbe891ddb915f8d68e727b786 Mon Sep 17 00:00:00 2001
+From fdc80d2460e5d3b54f5cde8657f9e171b0b9a376 Mon Sep 17 00:00:00 2001
 From: Chris Coulson <chris.coulson@canonical.com>
 Date: Fri, 10 Jul 2020 14:41:45 +0100
 Subject: script: Avoid a use-after-free when redefining a function during
@@ -31,10 +31,10 @@ Patch-Name: script-use-after-free.patch
  4 files changed, 19 insertions(+), 4 deletions(-)
 
 diff --git a/grub-core/script/execute.c b/grub-core/script/execute.c
-index ac01dec30..61b7cb335 100644
+index c8d6806fe..7e028e135 100644
 --- a/grub-core/script/execute.c
 +++ b/grub-core/script/execute.c
-@@ -837,7 +837,9 @@ grub_script_function_call (grub_script_function_t func, int argc, char **args)
+@@ -838,7 +838,9 @@ grub_script_function_call (grub_script_function_t func, int argc, char **args)
    old_scope = scope;
    scope = &new_scope;
  

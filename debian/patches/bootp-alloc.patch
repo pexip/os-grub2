@@ -1,4 +1,4 @@
-From e932a95132ed33f7403b01f790dc62ac4d668157 Mon Sep 17 00:00:00 2001
+From d8c9aaa767a83470147c843acc6d97f70140ebdf Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@debian.org>
 Date: Fri, 24 Jul 2020 11:24:28 +0100
 Subject: bootp: Improve allocation handling in parse_dhcp6_option
@@ -15,10 +15,10 @@ Patch-Name: bootp-alloc.patch
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/grub-core/net/bootp.c b/grub-core/net/bootp.c
-index 01fdf98ab..3003c09db 100644
+index dd0ffcdae..efa92b89b 100644
 --- a/grub-core/net/bootp.c
 +++ b/grub-core/net/bootp.c
-@@ -569,7 +569,7 @@ parse_dhcp6_option (const struct grub_net_dhcp6_option *opt, void *data)
+@@ -857,7 +857,7 @@ parse_dhcp6_option (const struct grub_net_dhcp6_option *opt, void *data)
  	      break;
  	    }
  	  dhcp6->num_dns_server = ln = len >> 4;

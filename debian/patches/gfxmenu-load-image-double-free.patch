@@ -1,4 +1,4 @@
-From 2ab48c54ba5cdf65f573be0dfa8c217d9af5e7f1 Mon Sep 17 00:00:00 2001
+From e283bb250350e8c2f7edeb344a624c57c26b042f Mon Sep 17 00:00:00 2001
 From: Alexey Makhalov <amakhalov@vmware.com>
 Date: Wed, 8 Jul 2020 20:41:56 +0000
 Subject: gfxmenu: Fix double free in load_image()

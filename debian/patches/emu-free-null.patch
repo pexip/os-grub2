@@ -1,4 +1,4 @@
-From 56f7198c75c606596a160668097a7ba51f2c1b3b Mon Sep 17 00:00:00 2001
+From c0a2098a2d47a752f9416a655a7010973298f66f Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Sun, 19 Jul 2020 16:08:08 -0400
 Subject: emu: make grub_free(NULL) safe

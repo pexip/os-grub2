@@ -1,4 +1,4 @@
-From fa1b49e4582500990723d566b4d27ce2917809d3 Mon Sep 17 00:00:00 2001
+From 81fae35a346bef8f7b27ba8d186a18ae21281755 Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@debian.org>
 Date: Sat, 25 Jul 2020 12:15:37 +0100
 Subject: linux: Fix integer overflows in initrd size handling
@@ -16,7 +16,7 @@ Patch-Name: linux-initrd-overflow.patch
  1 file changed, 54 insertions(+), 20 deletions(-)
 
 diff --git a/grub-core/loader/linux.c b/grub-core/loader/linux.c
-index 2305281df..84a0af451 100644
+index 25624ebc1..e9f819ee9 100644
 --- a/grub-core/loader/linux.c
 +++ b/grub-core/loader/linux.c
 @@ -4,6 +4,7 @@
@@ -70,13 +70,12 @@ index 2305281df..84a0af451 100644
  }
  
  grub_err_t
-@@ -173,27 +182,34 @@ grub_initrd_init (int argc, char *argv[],
+@@ -173,26 +182,33 @@ grub_initrd_init (int argc, char *argv[],
  	  eptr = grub_strchr (ptr, ':');
  	  if (eptr)
  	    {
 +	      grub_size_t dir_size, name_len;
 +
- 	      grub_file_filter_disable_compression ();
  	      initrd_ctx->components[i].newc_name = grub_strndup (ptr, eptr - ptr);
 -	      if (!initrd_ctx->components[i].newc_name)
 +	      if (!initrd_ctx->components[i].newc_name ||
