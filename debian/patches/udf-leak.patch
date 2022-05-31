@@ -1,4 +1,4 @@
-From bb7311a8f3781d24c564f7c9cf0c532917e159ed Mon Sep 17 00:00:00 2001
+From ba1d97845644290f03754432bcb6bbd6fefe7003 Mon Sep 17 00:00:00 2001
 From: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
 Date: Tue, 7 Jul 2020 22:02:31 -0400
 Subject: udf: Fix memory leak
@@ -15,10 +15,10 @@ Patch-Name: udf-leak.patch
  1 file changed, 13 insertions(+), 4 deletions(-)
 
 diff --git a/grub-core/fs/udf.c b/grub-core/fs/udf.c
-index 99b001f20..c23c0120f 100644
+index 21ac7f446..2ac5c1d00 100644
 --- a/grub-core/fs/udf.c
 +++ b/grub-core/fs/udf.c
-@@ -909,8 +909,10 @@ grub_udf_iterate_dir (grub_fshelp_node_t dir,
+@@ -965,8 +965,10 @@ grub_udf_iterate_dir (grub_fshelp_node_t dir,
  	    return 0;
  
            if (grub_udf_read_icb (dir->data, &dirent.icb, child))
@@ -31,7 +31,7 @@ index 99b001f20..c23c0120f 100644
            if (dirent.characteristics & GRUB_UDF_FID_CHAR_PARENT)
  	    {
  	      /* This is the parent directory.  */
-@@ -932,11 +934,18 @@ grub_udf_iterate_dir (grub_fshelp_node_t dir,
+@@ -988,11 +990,18 @@ grub_udf_iterate_dir (grub_fshelp_node_t dir,
  				       dirent.file_ident_length,
  				       (char *) raw))
  		  != dirent.file_ident_length)

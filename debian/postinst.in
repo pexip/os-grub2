@@ -428,7 +428,7 @@ case "$1" in
     ucf_env=UCF_FORCE_CONFFNEW=yes
     
     env $ucf_env ucf --three-way --debconf-ok --sum-file=/usr/share/grub/default/grub.md5sum "$tmp_default_grub" /etc/default/grub
-    cp -a /usr/share/grub/default/grub /var/lib/grub/ucf/grub.previous
+    cp -aZ /usr/share/grub/default/grub /var/lib/grub/ucf/grub.previous
     package="$(ucfq --with-colons /etc/default/grub | cut -d : -f 2)"
     if echo $package | grep -q "^grub-" ; then
       ucfr --force @PACKAGE@ /etc/default/grub
@@ -583,8 +583,8 @@ case "$1" in
                 RET=${ids%%,*}
             fi
             failed_devices=
-            for i in `echo $RET | sed -e 's/, / /g'` ; do
-              real_device="$(readlink -f "$i")"
+            for i in $RET; do
+              real_device="$(readlink -f "${i%,}")"
               if [ ! -e "$real_device" ]; then
                 echo "$real_device does not exist, so cannot grub-install to it!" >&2
                 failed_devices="$failed_devices $real_device"
@@ -710,6 +710,7 @@ case "$1" in
                          cut -d' ' -f1)"
         case $bootloader_id in
           kubuntu) bootloader_id=ubuntu ;;
+          devuan) bootloader_id=debian ;;
         esac
         if [ "$bootloader_id" ] && [ -d "/boot/efi/EFI/$bootloader_id" ]; then
           case @PACKAGE@ in

@@ -1,4 +1,4 @@
-From 4ef36035d76e86156504e15dc39214eb63810e96 Mon Sep 17 00:00:00 2001
+From d84e89f4734711d8ff3c84b6c58985c824b4d889 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 15 Jun 2020 12:28:27 -0400
 Subject: malloc: Use overflow checking primitives where we do complex
@@ -57,7 +57,7 @@ Patch-Name: safe-alloc-4.patch
  23 files changed, 382 insertions(+), 113 deletions(-)
 
 diff --git a/grub-core/commands/legacycfg.c b/grub-core/commands/legacycfg.c
-index bc7936c23..51e218577 100644
+index 5e3ec0d5e..cc5971f4d 100644
 --- a/grub-core/commands/legacycfg.c
 +++ b/grub-core/commands/legacycfg.c
 @@ -32,6 +32,7 @@
@@ -120,7 +120,7 @@ index bc7936c23..51e218577 100644
  		  grub_free (suffix);
  		  return grub_errno;
 diff --git a/grub-core/commands/wildcard.c b/grub-core/commands/wildcard.c
-index 9b4e72766..18b2b5e78 100644
+index 4a106ca04..cc3290311 100644
 --- a/grub-core/commands/wildcard.c
 +++ b/grub-core/commands/wildcard.c
 @@ -23,6 +23,7 @@
@@ -222,7 +222,7 @@ index 9b4e72766..18b2b5e78 100644
        return 1;
      }
 diff --git a/grub-core/disk/ldm.c b/grub-core/disk/ldm.c
-index d3d2009d0..cfd5f6c64 100644
+index e6323701a..58f8a53e1 100644
 --- a/grub-core/disk/ldm.c
 +++ b/grub-core/disk/ldm.c
 @@ -25,6 +25,7 @@
@@ -293,7 +293,7 @@ index d3d2009d0..cfd5f6c64 100644
  		    goto fail2;
  		  comp->segments = t;
 diff --git a/grub-core/font/font.c b/grub-core/font/font.c
-index 68967dc1c..d63354fb5 100644
+index 8e118b315..5edb477ac 100644
 --- a/grub-core/font/font.c
 +++ b/grub-core/font/font.c
 @@ -30,6 +30,7 @@
@@ -320,18 +320,18 @@ index 68967dc1c..d63354fb5 100644
      return 0;
  
 diff --git a/grub-core/fs/btrfs.c b/grub-core/fs/btrfs.c
-index 3ff3885e7..62c9d02fb 100644
+index 4b8380439..27339bdb3 100644
 --- a/grub-core/fs/btrfs.c
 +++ b/grub-core/fs/btrfs.c
-@@ -29,6 +29,7 @@
- #include <minilzo.h>
- #include <grub/i18n.h>
+@@ -40,6 +40,7 @@
  #include <grub/btrfs.h>
+ #include <grub/crypto.h>
+ #include <grub/diskfilter.h>
 +#include <grub/safemath.h>
  
  GRUB_MOD_LICENSE ("GPLv3+");
  
-@@ -292,9 +293,13 @@ save_ref (struct grub_btrfs_leaf_descriptor *desc,
+@@ -331,9 +332,13 @@ save_ref (struct grub_btrfs_leaf_descriptor *desc,
    if (desc->allocated < desc->depth)
      {
        void *newdata;
@@ -348,7 +348,7 @@ index 3ff3885e7..62c9d02fb 100644
        if (!newdata)
  	return grub_errno;
        desc->data = newdata;
-@@ -589,15 +594,20 @@ find_device (struct grub_btrfs_data *data, grub_uint64_t id, int do_rescan)
+@@ -624,16 +629,21 @@ find_device (struct grub_btrfs_data *data, grub_uint64_t id)
    if (data->n_devices_attached > data->n_devices_allocated)
      {
        void *tmp;
@@ -367,16 +367,17 @@ index 3ff3885e7..62c9d02fb 100644
 +      data->devices_attached = grub_realloc (tmp = data->devices_attached, sz);
        if (!data->devices_attached)
  	{
--	  grub_device_close (ctx.dev_found);
- 	  data->devices_attached = tmp;
++	  data->devices_attached = tmp;
 +
 + fail:
-+	  grub_device_close (ctx.dev_found);
+ 	  if (ctx.dev_found)
+ 	    grub_device_close (ctx.dev_found);
+-	  data->devices_attached = tmp;
  	  return NULL;
  	}
      }
 diff --git a/grub-core/fs/ext2.c b/grub-core/fs/ext2.c
-index b8ad75a0f..b4bd019f4 100644
+index 9b389802a..ac33bcd68 100644
 --- a/grub-core/fs/ext2.c
 +++ b/grub-core/fs/ext2.c
 @@ -46,6 +46,7 @@
@@ -411,7 +412,7 @@ index b8ad75a0f..b4bd019f4 100644
      return 0;
  
 diff --git a/grub-core/fs/iso9660.c b/grub-core/fs/iso9660.c
-index 092b8f409..f45841e2b 100644
+index 4f1b52a55..7ba5b300b 100644
 --- a/grub-core/fs/iso9660.c
 +++ b/grub-core/fs/iso9660.c
 @@ -28,6 +28,7 @@
@@ -515,7 +516,7 @@ index 092b8f409..f45841e2b 100644
  		      grub_free (ctx.filename);
  		    grub_free (node);
 diff --git a/grub-core/fs/sfs.c b/grub-core/fs/sfs.c
-index 663931717..3ddc6b5e2 100644
+index 90f7fb379..de2b107a4 100644
 --- a/grub-core/fs/sfs.c
 +++ b/grub-core/fs/sfs.c
 @@ -26,6 +26,7 @@
@@ -579,7 +580,7 @@ index 663931717..3ddc6b5e2 100644
  	*grub_latin1_to_utf8 ((grub_uint8_t *) *label,
  			      (const grub_uint8_t *) data->label,
 diff --git a/grub-core/fs/squash4.c b/grub-core/fs/squash4.c
-index 2c967c65a..f9bef38fc 100644
+index 95d5c1e1f..785123894 100644
 --- a/grub-core/fs/squash4.c
 +++ b/grub-core/fs/squash4.c
 @@ -26,6 +26,7 @@
@@ -678,7 +679,7 @@ index 2c967c65a..f9bef38fc 100644
  	  node->ino = ino;
  	  node->stack[node->stsize].ino_chunk = grub_le_to_cpu32 (dh.ino_chunk);
 diff --git a/grub-core/fs/udf.c b/grub-core/fs/udf.c
-index ebf16250a..99b001f20 100644
+index a83761674..21ac7f446 100644
 --- a/grub-core/fs/udf.c
 +++ b/grub-core/fs/udf.c
 @@ -28,6 +28,7 @@
@@ -689,7 +690,7 @@ index ebf16250a..99b001f20 100644
  
  GRUB_MOD_LICENSE ("GPLv3+");
  
-@@ -853,9 +854,19 @@ read_string (const grub_uint8_t *raw, grub_size_t sz, char *outbuf)
+@@ -890,9 +891,19 @@ read_string (const grub_uint8_t *raw, grub_size_t sz, char *outbuf)
  	utf16[i] = (raw[2 * i + 1] << 8) | raw[2*i + 2];
      }
    if (!outbuf)
@@ -710,7 +711,7 @@ index ebf16250a..99b001f20 100644
    grub_free (utf16);
    return outbuf;
  }
-@@ -949,7 +960,7 @@ grub_udf_read_symlink (grub_fshelp_node_t node)
+@@ -1005,7 +1016,7 @@ grub_udf_read_symlink (grub_fshelp_node_t node)
    grub_size_t sz = U64 (node->block.fe.file_size);
    grub_uint8_t *raw;
    const grub_uint8_t *ptr;
@@ -719,7 +720,7 @@ index ebf16250a..99b001f20 100644
  
    if (sz < 4)
      return NULL;
-@@ -957,14 +968,16 @@ grub_udf_read_symlink (grub_fshelp_node_t node)
+@@ -1013,14 +1024,16 @@ grub_udf_read_symlink (grub_fshelp_node_t node)
    if (!raw)
      return NULL;
    if (grub_udf_read_file (node, NULL, NULL, 0, sz, (char *) raw) < 0)
@@ -741,7 +742,7 @@ index ebf16250a..99b001f20 100644
        grub_free (raw);
        return NULL;
      }
-@@ -975,17 +988,17 @@ grub_udf_read_symlink (grub_fshelp_node_t node)
+@@ -1031,17 +1044,17 @@ grub_udf_read_symlink (grub_fshelp_node_t node)
      {
        grub_size_t s;
        if ((grub_size_t) (ptr - raw + 4) > sz)
@@ -763,7 +764,7 @@ index ebf16250a..99b001f20 100644
  	  /* Fallthrough.  */
  	case 2:
  	  /* in 4 bytes. out: 1 byte.  */
-@@ -1010,11 +1023,11 @@ grub_udf_read_symlink (grub_fshelp_node_t node)
+@@ -1066,11 +1079,11 @@ grub_udf_read_symlink (grub_fshelp_node_t node)
  	  if (optr != out)
  	    *optr++ = '/';
  	  if (!read_string (ptr + 4, s - 4, optr))
@@ -777,7 +778,7 @@ index ebf16250a..99b001f20 100644
  	}
        ptr += s;
      }
-@@ -1022,7 +1035,7 @@ grub_udf_read_symlink (grub_fshelp_node_t node)
+@@ -1078,7 +1091,7 @@ grub_udf_read_symlink (grub_fshelp_node_t node)
    grub_free (raw);
    return out;
  
@@ -787,7 +788,7 @@ index ebf16250a..99b001f20 100644
    grub_free (out);
    grub_error (GRUB_ERR_BAD_FS, "invalid symlink");
 diff --git a/grub-core/fs/xfs.c b/grub-core/fs/xfs.c
-index 231f5b886..fe0fff8a0 100644
+index 96ffecbfc..ea6590290 100644
 --- a/grub-core/fs/xfs.c
 +++ b/grub-core/fs/xfs.c
 @@ -25,6 +25,7 @@
@@ -798,7 +799,7 @@ index 231f5b886..fe0fff8a0 100644
  
  GRUB_MOD_LICENSE ("GPLv3+");
  
-@@ -896,6 +897,7 @@ static struct grub_xfs_data *
+@@ -899,6 +900,7 @@ static struct grub_xfs_data *
  grub_xfs_mount (grub_disk_t disk)
  {
    struct grub_xfs_data *data = 0;
@@ -806,7 +807,7 @@ index 231f5b886..fe0fff8a0 100644
  
    data = grub_zalloc (sizeof (struct grub_xfs_data));
    if (!data)
-@@ -910,10 +912,11 @@ grub_xfs_mount (grub_disk_t disk)
+@@ -913,10 +915,11 @@ grub_xfs_mount (grub_disk_t disk)
    if (!grub_xfs_sb_valid(data))
      goto fail;
  
@@ -823,7 +824,7 @@ index 231f5b886..fe0fff8a0 100644
    if (! data)
      goto fail;
 diff --git a/grub-core/fs/zfs/zfs.c b/grub-core/fs/zfs/zfs.c
-index f6b95d4fb..c6204367e 100644
+index 381dde556..36d0373a6 100644
 --- a/grub-core/fs/zfs/zfs.c
 +++ b/grub-core/fs/zfs/zfs.c
 @@ -55,6 +55,7 @@
@@ -876,7 +877,7 @@ index f6b95d4fb..c6204367e 100644
      return 0;
    grub_memcpy (ret, nvlist, sizeof (grub_uint32_t));
 diff --git a/grub-core/fs/zfs/zfscrypt.c b/grub-core/fs/zfs/zfscrypt.c
-index 87eef621d..f8488c353 100644
+index 1402e0bc2..de3b015f5 100644
 --- a/grub-core/fs/zfs/zfscrypt.c
 +++ b/grub-core/fs/zfs/zfscrypt.c
 @@ -22,6 +22,7 @@
@@ -955,7 +956,7 @@ index fd7744a6f..3288609a5 100644
      return 0;
  
 diff --git a/grub-core/loader/i386/bsd.c b/grub-core/loader/i386/bsd.c
-index 7f96515da..ea3925416 100644
+index 3730ed382..b92cbe98d 100644
 --- a/grub-core/loader/i386/bsd.c
 +++ b/grub-core/loader/i386/bsd.c
 @@ -35,6 +35,7 @@
@@ -963,10 +964,10 @@ index 7f96515da..ea3925416 100644
  #include <grub/bsdlabel.h>
  #include <grub/crypto.h>
 +#include <grub/safemath.h>
+ #include <grub/verify.h>
  #ifdef GRUB_MACHINE_PCBIOS
  #include <grub/machine/int.h>
- #endif
-@@ -1006,11 +1007,16 @@ grub_netbsd_add_modules (void)
+@@ -1012,11 +1013,16 @@ grub_netbsd_add_modules (void)
    struct grub_netbsd_btinfo_modules *mods;
    unsigned i;
    grub_err_t err;
@@ -1051,7 +1052,7 @@ index d57fb72fa..4dfcc3107 100644
  		  continue;
  		}
 diff --git a/grub-core/normal/cmdline.c b/grub-core/normal/cmdline.c
-index 900360995..b4b66ba34 100644
+index c57242e2e..de03fe63b 100644
 --- a/grub-core/normal/cmdline.c
 +++ b/grub-core/normal/cmdline.c
 @@ -28,6 +28,7 @@
@@ -1087,7 +1088,7 @@ index 900360995..b4b66ba34 100644
  	  grub_errno = GRUB_ERR_NONE;
  	  (*max_len) /= 2;
 diff --git a/grub-core/normal/menu_entry.c b/grub-core/normal/menu_entry.c
-index a86f05684..5f0800c8e 100644
+index 1993995be..50eef918c 100644
 --- a/grub-core/normal/menu_entry.c
 +++ b/grub-core/normal/menu_entry.c
 @@ -27,6 +27,7 @@
@@ -1287,7 +1288,7 @@ index b2e031566..6256e209a 100644
  
  /* Frees all resources allocated by bitmap.  */
 diff --git a/grub-core/video/readers/png.c b/grub-core/video/readers/png.c
-index e85df3c1b..719e647e4 100644
+index 61bd64537..0157ff742 100644
 --- a/grub-core/video/readers/png.c
 +++ b/grub-core/video/readers/png.c
 @@ -23,6 +23,7 @@

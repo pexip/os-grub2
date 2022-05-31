@@ -1,4 +1,4 @@
-From 056c98185feaf1faf6000afe1d803d57808be26b Mon Sep 17 00:00:00 2001
+From 3e6aa687d9a2f8d172536a67d0d0f8bc7adb3108 Mon Sep 17 00:00:00 2001
 From: Alexander Burmashev <alexander.burmashev@oracle.com>
 Date: Wed, 22 Jul 2020 06:04:38 -0700
 Subject: update safemath with fallback code for gcc older than 5.1

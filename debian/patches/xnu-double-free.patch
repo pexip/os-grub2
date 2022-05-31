@@ -1,4 +1,4 @@
-From a638d1b9eca5e55e7ac49b8d710d526888a94a88 Mon Sep 17 00:00:00 2001
+From 387219ffbb751afd336ebd71f1a375d9923ba416 Mon Sep 17 00:00:00 2001
 From: Alexey Makhalov <amakhalov@vmware.com>
 Date: Wed, 8 Jul 2020 21:30:43 +0000
 Subject: xnu: Fix double free in grub_xnu_devprop_add_property()
@@ -19,7 +19,7 @@ Patch-Name: xnu-double-free.patch
  1 file changed, 8 insertions(+), 9 deletions(-)
 
 diff --git a/grub-core/loader/i386/xnu.c b/grub-core/loader/i386/xnu.c
-index ee0eaadc4..c760db30f 100644
+index b7d176b5d..e9e119259 100644
 --- a/grub-core/loader/i386/xnu.c
 +++ b/grub-core/loader/i386/xnu.c
 @@ -262,20 +262,19 @@ grub_xnu_devprop_add_property (struct grub_xnu_devprop_device_descriptor *dev,

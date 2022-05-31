@@ -1,4 +1,4 @@
-From 39e3f4ef385f829c2db9ad1dee7565458113d1a7 Mon Sep 17 00:00:00 2001
+From 016977edbd5d9f6fbab6412fb8b4d1f50eb432e7 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 15 Jun 2020 10:58:42 -0400
 Subject: safemath: Add some arithmetic primitives that check for overflow
@@ -27,7 +27,7 @@ Patch-Name: safe-alloc-1.patch
  create mode 100644 include/grub/safemath.h
 
 diff --git a/INSTALL b/INSTALL
-index 5862e458a..a3667519c 100644
+index 342c158e9..991479b52 100644
 --- a/INSTALL
 +++ b/INSTALL
 @@ -11,27 +11,9 @@ GRUB depends on some software packages installed into your system. If

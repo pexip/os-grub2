@@ -1,4 +1,4 @@
-From 813bc6ddb3ed1845d6bbd2aaf8dbca976b201812 Mon Sep 17 00:00:00 2001
+From dcc097ac0531485f0785816469370bfcb1a29f60 Mon Sep 17 00:00:00 2001
 From: Alexey Makhalov <amakhalov@vmware.com>
 Date: Fri, 17 Jul 2020 05:17:26 +0000
 Subject: relocator: Fix grub_relocator_alloc_chunk_align() top memory
