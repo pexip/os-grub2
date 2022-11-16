@@ -1,3 +1,18 @@
+grub2 (2.06-3~deb11u4pexip1) pexip; urgency=medium
+
+  * New upstream release
+
+ -- Steve McIntyre <steve.mcintyre@pexip.com>  Fri, 07 Oct 2022 16:08:18 +0100
+
+grub2 (2.06-3~deb11u4) bullseye-security; urgency=high
+
+  [ Steve McIntyre ]
+  * Pull in upstream patches to harden font and image handling -
+    CVE-2022-2601, CVE-2022-3775.
+  * Bump SBAT level to 3 for grub-efi packages.
+
+ -- Steve McIntyre <93sam@debian.org>  Sun, 13 Nov 2022 00:53:50 +0000
+
 grub2 (2.06-3~deb11u2pexip2) pexip; urgency=medium
 
   * Force rebuild to move grub-efi-amd64-bin into main
