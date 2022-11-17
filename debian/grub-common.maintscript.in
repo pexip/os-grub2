@@ -1,1 +1,2 @@
 rm_conffile /etc/bash_completion.d/grub 2.02+dfsg1-9~
+rm_conffile /etc/pm/sleep.d/10_grub-common 2.06-3~deb11u4pexip1~

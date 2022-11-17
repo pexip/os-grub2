@@ -1,3 +1,9 @@
+grub2 (2.06-3~deb11u4pexip2) pexip; urgency=medium
+
+  * Clean up leftover config files
+
+ -- Huw Jones <huw@pexip.com>  Thu, 17 Nov 2022 10:58:28 +0000
+
 grub2 (2.06-3~deb11u4pexip1) pexip; urgency=medium
 
   * New upstream release
