@@ -1,3 +1,22 @@
+grub2 (2.06-3~deb11u5pexip1) pexip; urgency=medium
+
+  * New upstream release
+
+ -- Steve McIntyre <steve.mcintyre@pexip.com>  Mon, 19 Dec 2022 11:02:16 +0000
+
+grub2 (2.06-3~deb11u5) bullseye; urgency=high
+
+  [ Steve McIntyre ]
+  * Include fonts in the memdisk build for EFI images.
+  * Bump Debian SBAT level to 4
+    - Due to a mistake in the buster upload (2.06-3~deb10u2) that left
+      the CVE-2022-2601 bugs in place, we need to bump SBAT for all of
+      the Debian GRUB binaries. :-(
+  * Fix bug in core file code so errors are handled better. This makes
+    the above font-handling patch work!
+
+ -- Steve McIntyre <93sam@debian.org>  Thu, 08 Nov 2022 17:29:17 +0000
+
 grub2 (2.06-3~deb11u4pexip2) pexip; urgency=medium
 
   * Clean up leftover config files
