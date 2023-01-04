@@ -1,3 +1,11 @@
+grub2 (2.06-3~deb11u5pexip2) pexip; urgency=medium
+
+  * grub-install: Be more robust when writing out the core image.
+    Flush and sync aggressively, and do a read back comparison after
+    writing too.
+
+ -- Steve McIntyre <steve.mcintyre@pexip.com>  Tue, 03 Jan 2023 20:32:44 +0000
+
 grub2 (2.06-3~deb11u5pexip1) pexip; urgency=medium
 
   * New upstream release

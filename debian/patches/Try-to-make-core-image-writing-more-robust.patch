@@ -1,0 +1,103 @@
+commit b91a7cdce33505ddcb744b4ca1638296335cb2e2
+Author: Steve McIntyre <steve.mcintyre@pexip.com>
+Date:   Wed Dec 21 12:51:11 2022 +0000
+
+    Try to make core image writing more robust
+    
+    When writing out the core image, flush after every sector. When we're
+    done, read back and compare. Let's hoe this makes a difference.
+    
+    Also add more debug around writing and syncing.
+
+diff --git a/util/setup.c b/util/setup.c
+index 87a889ff7..88ca8ac8b 100644
+--- a/util/setup.c
++++ b/util/setup.c
+@@ -243,8 +243,10 @@ identify_partmap (grub_disk_t disk __attribute__ ((unused)),
+ 
+ #ifdef GRUB_SETUP_BIOS
+ #define SETUP grub_util_bios_setup
++#define SETUP_NAME "grub_util_bios_setup"
+ #elif GRUB_SETUP_SPARC64
+ #define SETUP grub_util_sparc_setup
++#define SETUP_NAME "grub_util_sparc_setup"
+ #else
+ #error "Shouldn't happen"
+ #endif
+@@ -278,7 +262,7 @@ SETUP (const char *dir,
+   char *core_path;
+   char *boot_img, *core_img, *boot_path;
+   char *root = 0;
+-  size_t boot_size, core_size;
++  size_t boot_size, core_size, padded_core_size;
+   grub_uint16_t core_sectors;
+   grub_device_t root_dev = 0, dest_dev, core_dev;
+   grub_util_fd_t fp;
+@@ -608,9 +610,15 @@ SETUP (const char *dir,
+ #endif
+ 
+     /* Round up to the nearest sector boundary, and zero the extra memory */
+-    core_img = xrealloc (core_img, nsec * GRUB_DISK_SECTOR_SIZE);
+-    assert (core_img && (nsec * GRUB_DISK_SECTOR_SIZE >= core_size));
+-    memset (core_img + core_size, 0, nsec * GRUB_DISK_SECTOR_SIZE - core_size);
++    padded_core_size = nsec * GRUB_DISK_SECTOR_SIZE;
++    core_img = xrealloc (core_img, padded_core_size);
++    assert (core_img && (padded_core_size >= core_size));
++    memset (core_img + core_size, 0, padded_core_size - core_size);
++
++    grub_util_info ("core image created: %lu bytes, padded up to %lu, nsec %ld",
++		    (unsigned long) core_size,
++		    (unsigned long) padded_core_size,
++		    (unsigned long) nsec);
+ 
+     bl.first_block = (struct grub_boot_blocklist *) (core_img
+ 						     + GRUB_DISK_SECTOR_SIZE
+@@ -643,9 +651,33 @@ SETUP (const char *dir,
+ 
+     /* Write the core image onto the disk.  */
+     for (i = 0; i < nsec; i++)
+-      grub_disk_write (dest_dev->disk, sectors[i], 0,
+-		       GRUB_DISK_SECTOR_SIZE,
+-		       core_img + i * GRUB_DISK_SECTOR_SIZE);
++      {
++        grub_util_info ("%s: Writing to disk %s, sector %ld, %d bytes",
++			SETUP_NAME, dest_dev->disk->name, sectors[i], GRUB_DISK_SECTOR_SIZE);
++	grub_disk_write (dest_dev->disk, sectors[i], 0,
++			 GRUB_DISK_SECTOR_SIZE,
++			 core_img + i * GRUB_DISK_SECTOR_SIZE);
++	grub_util_info ("%s: Flushing disk %s",
++			SETUP_NAME, dest_dev->disk->name);
++	grub_util_biosdisk_flush (dest_dev->disk);
++      }
++
++    /* Now read back the sectors and compare. Paranoia... :-( */
++    {
++      char *core_img_readback = xmalloc (padded_core_size);
++      for (i = 0; i < nsec; i++)
++        {
++          grub_disk_read (dest_dev->disk, sectors[i], 0,
++                         GRUB_DISK_SECTOR_SIZE,
++                         core_img_readback + i * GRUB_DISK_SECTOR_SIZE);
++       }
++      i = grub_memcmp (core_img_readback, core_img, padded_core_size);
++      free (core_img_readback);
++      if (i == 0)
++         grub_printf ("Readback of core image compares OK.\n");
++      else
++         grub_util_error ("%s: Readback of core image gives MISMATCH", SETUP_NAME);
++    }
+ #endif
+ 
+ #ifdef GRUB_SETUP_SPARC64
+@@ -865,7 +898,11 @@ unable_to_embed:
+  finish:
+ #endif
+ 
++  grub_util_info ("%s: Flushing disk %s",
++		  SETUP_NAME, root_dev->disk->name);
+   grub_util_biosdisk_flush (root_dev->disk);
++  grub_util_info ("%s: Flushing disk %s",
++		  SETUP_NAME, dest_dev->disk->name);
+   grub_util_biosdisk_flush (dest_dev->disk);
+ 
+   free (core_path);
