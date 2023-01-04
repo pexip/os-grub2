@@ -3,8 +3,13 @@ grub2 (2.06-3~deb11u5pexip2) pexip; urgency=medium
   * grub-install: Be more robust when writing out the core image.
     Flush and sync aggressively, and do a read back comparison after
     writing too.
+  * Fix device selection for grub-install in postinst for grub-pc. We
+    may have multiple disk devices, and can't assume the first one is
+    the right one. Instead, in PexOS we *can* assume that the boot
+    disk is the same one where /boot/grub is located. Run grub-install
+    there. Includes extra diagnostics to show the fix working.
 
- -- Steve McIntyre <steve.mcintyre@pexip.com>  Tue, 03 Jan 2023 20:32:44 +0000
+ -- Steve McIntyre <steve.mcintyre@pexip.com>  Wed, 04 Jan 2023 11:01:47 +0000
 
 grub2 (2.06-3~deb11u5pexip1) pexip; urgency=medium
 

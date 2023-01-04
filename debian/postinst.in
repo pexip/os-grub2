@@ -553,6 +553,10 @@ case "$1" in
                     describe_partition "$(readlink -f "$device")" "$(readlink -f "$partition_id")" "$partition_id" "$(get_mountpoint "${partition_pair%%:*}")"
                     RET="$(printf %s "$RET" | sed 's/,/\\,/g')"
                     descriptions="${descriptions:+$descriptions, }$RET"
+
+                    # Store the result here in case we need it later
+                    boot_disk_id=$disk_id
+                    echo "Found $partition_pair on $disk_id, setting boot_disk_id to $boot_disk_id"
                   fi
                 done
               fi
@@ -579,10 +583,15 @@ case "$1" in
             db_go
             db_get "$question"
             if [ -z "$RET" ] && [ -n "$2" ] && [ -n "$noninteractive" ]; then
-                # Forcibly install on upgrade if noninteractive
-                RET=${ids%%,*}
+                # Forcibly install on upgrade if noninteractive, to
+                # the disk containing /boot/grub. This is the right
+                # disk for our config, regardless of the order of
+                # disks.
+                RET="${boot_disk_id}"
+                echo "@PACKAGE@: Found no explicit config, forcing installation to $RET"
             fi
             failed_devices=
+            echo "@PACKAGE@: Running grub-install ..."
             for i in $RET; do
               real_device="$(readlink -f "${i%,}")"
               if [ ! -e "$real_device" ]; then
