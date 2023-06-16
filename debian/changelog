@@ -1,3 +1,10 @@
+grub2 (2.06-3~deb11u5pexip3) pexip; urgency=medium
+
+  * postrm: don't purge /etc/default/grub and /boon/grub, they're
+    needed and managed with other packages too
+
+ -- Steve McIntyre <steve.mcintyre@pexip.com>  Fri, 16 Jun 2023 14:53:33 +0100
+
 grub2 (2.06-3~deb11u5pexip2) pexip; urgency=medium
 
   * grub-install: Be more robust when writing out the core image.
