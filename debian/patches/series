@@ -107,3 +107,9 @@ cve_2022_2601/0013-font-Assign-null_font-to-glyphs-in-ascii_font_glyph.patch
 cve_2022_2601/0014-normal-charset-Fix-an-integer-overflow-in-grub_unico.patch
 font-Try-opening-fonts-from-the-bundled-memdisk.patch
 kern-file-Fix-error-handling-in-grub_file_open.patch
+ntfs-cve-fixes/fs-ntfs-Fix-an-OOB-write-when-parsing-the-ATTRIBUTE_LIST-.patch
+ntfs-cve-fixes/fs-ntfs-Fix-an-OOB-read-when-reading-data-from-the-reside.patch
+ntfs-cve-fixes/fs-ntfs-Fix-an-OOB-read-when-parsing-directory-entries-fr.patch
+ntfs-cve-fixes/fs-ntfs-Fix-an-OOB-read-when-parsing-bitmaps-for-index-at.patch
+ntfs-cve-fixes/fs-ntfs-Fix-an-OOB-read-when-parsing-a-volume-label.patch
+ntfs-cve-fixes/fs-ntfs-Make-code-more-readable.patch
