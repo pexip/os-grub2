@@ -1,3 +1,44 @@
+grub2 (2.06-3~deb11u6pexip1) pexip; urgency=medium
+
+  * New upstream release
+
+ -- Steve McIntyre <steve.mcintyre@pexip.com>  Mon, 09 Oct 2023 14:29:58 +0100
+
+grub2 (2.06-3~deb11u6) bullseye-security; urgency=medium
+
+  [ Mate Kukri ]
+  * SECURITY UPDATE: Crafted file system images can cause out-of-bounds write
+    and may leak sensitive information into the GRUB pager.
+    - d/patches/ntfs-cve-fixes/fs-ntfs-Fix-an-OOB-read-when-parsing-a-volume-
+      label.patch:
+      fs/ntfs: Fix an OOB read when parsing a volume label
+    - d/patches/ntfs-cve-fixes/fs-ntfs-Fix-an-OOB-read-when-parsing-bs-for-
+      index-at.patch:
+      fs/ntfs: Fix an OOB read when parsing bitmaps for index attributes
+    - d/patches/ntfs-cve-fixes/fs-ntfs-Fix-an-OOB-read-when-parsing-dory-
+      entries-fr.patch:
+      fs/ntfs: Fix an OOB read when parsing directory entries from resident and
+      non-resident index attributes
+    - d/patches/ntfs-cve-fixes/fs-ntfs-Fix-an-OOB-read-when-reading-data-fhe-
+      reside.patch:
+      fs/ntfs: Fix an OOB read when reading data from the resident $DATA +
+      attribute
+    - CVE-2023-4693
+  * SECURITY UPDATE: Crafted file system images can cause heap-based buffer
+    overflow and may allow arbitrary code execution and secure boot bypass.
+    - d/patches/ntfs-cve-fixes/fs-ntfs-Fix-an-OOB-write-when-parsing-the-
+      ATTRIBUTE_LIST-.patch:
+      fs/ntfs: Fix an OOB write when parsing the $ATTRIBUTE_LIST attribute for
+      the $MFT file
+    - d/patches/ntfs-cve-fixes/fs-ntfs-Make-code-more-readable.patch
+      fs/ntfs: Make code more readable
+    - CVE-2023-4692
+
+  [ Julian Andres Klode ]
+  * Bump SBAT to grub,4
+
+ -- Julian Andres Klode <jak@debian.org>  Mon, 02 Oct 2023 16:11:34 +0200
+
 grub2 (2.06-3~deb11u5pexip3) pexip; urgency=medium
 
   * postrm: don't purge /etc/default/grub and /boon/grub, they're
