@@ -130,3 +130,4 @@ ntfs-cve-fixes/fs-ntfs-Make-code-more-readable.patch
 
 # Pexip patches
 Try-to-make-core-image-writing-more-robust.patch
+permit-non-block-devices.patch
