@@ -1,3 +1,9 @@
+grub2 (2.06-13+deb12u1+pexip24u5) pexip; urgency=medium
+
+  * No-change rebuild
+
+ -- John-Mark Bell <jmb@pexip.com>  Tue, 27 Aug 2024 10:10:35 +0100
+
 grub2 (2.06-13+deb12u1+pexip24u4) pexip; urgency=medium
 
   * Permit non-block devices
