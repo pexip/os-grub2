@@ -1,3 +1,18 @@
+grub2 (2.12-9) unstable; urgency=medium
+
+  * Apply patch by Ben Hutchings to not strip .exec or .image files
+    (Closes: #1072167)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Thu, 03 Jul 2025 18:35:51 +0200
+
+grub2 (2.12-8) unstable; urgency=medium
+
+  [ Mate Kukri ]
+  * d/default/grub: Always get distributor string from `/etc/os-release`
+  * Avoid adding extra GNU/Linux suffix to menu entries (Closes: #1076723)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Wed, 11 Jun 2025 17:42:34 +0200
+
 grub2 (2.12-7) unstable; urgency=medium
 
   [ Mate Kukri ]
