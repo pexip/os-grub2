@@ -1,3 +1,9 @@
+grub2 (2.12-9+pexip25u3) pexip-trixie; urgency=medium
+
+  * Rebuild to move unsigned packages to main
+
+ -- Mark Hymers <mark.hymers@pexip.com>  Thu, 22 Jan 2026 15:22:50 +0000
+
 grub2 (2.12-9+pexip25u2) pexip-trixie; urgency=medium
 
   * Tweak the SBAT data for Pexip.
