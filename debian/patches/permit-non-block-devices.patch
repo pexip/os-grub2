@@ -19,3 +19,27 @@ index 001b818..e950edd 100644
      }
  
    path = xmalloc (PATH_MAX);
+diff --git a/grub-core/osdep/linux/hostdisk.c b/grub-core/osdep/linux/hostdisk.c
+index 7e24ae6..1fa0ecc 100644
+--- a/grub-core/osdep/linux/hostdisk.c
++++ b/grub-core/osdep/linux/hostdisk.c
+@@ -99,11 +99,15 @@ sysfs_partition_path (const char *dev, const char *entry)
+ {
+   struct stat st;
+ 
+-  if (stat (dev, &st) == 0 && S_ISBLK (st.st_mode))
+-    return xasprintf ("/sys/dev/block/%u:%u/%s",
+-		      major (st.st_rdev), minor (st.st_rdev), entry);
++  if (stat (dev, &st) != 0)
++    return NULL;
+ 
+-  return NULL;
++  if (! getenv("GRUB_PERMIT_NON_BLOCK_DEVICES"))
++    if (! S_ISBLK (st.st_mode))
++      return NULL;
++
++  return xasprintf ("/sys/dev/block/%u:%u/%s",
++		    major (st.st_rdev), minor (st.st_rdev), entry);
+ }
+ 
+ static int
