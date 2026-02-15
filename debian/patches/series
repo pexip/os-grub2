@@ -70,6 +70,7 @@ fdt-add-debug-output-to-devicetree-command.patch
 fdt-device-tree-fixup-protocol.patch
 extra_deps_lst.patch
 upstream/acpi-Fix-out-of-bounds-access-in-grub_acpi_xsdt_find_tabl.patch
+upstream/zfs-fix-LINUX_ROOT_DEVICE-when-grub-probe-fails.patch
 install-signed.patch
 grub-install-extra-removable.patch
 grub-install-removable-shim.patch
