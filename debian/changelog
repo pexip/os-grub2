@@ -1,3 +1,11 @@
+grub2 (2.12-9+deb13u2) trixie; urgency=medium
+
+  * Non-maintainer upload.
+  * Apply patch from upstream to fix an illegal instruction on riscv64 in
+    grub.efi (Closes: #1108898)
+
+ -- Aurelien Jarno <aurel32@debian.org>  Thu, 30 Apr 2026 21:02:01 +0200
+
 grub2 (2.12-9+deb13u1) trixie; urgency=medium
 
   * Non-maintainer upload.
