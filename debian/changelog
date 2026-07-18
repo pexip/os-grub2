@@ -1,3 +1,13 @@
+grub2 (2.12-9+pexip25u7+deb13u3) pexip-trixie; urgency=medium
+
+  * Tweak the SBAT data:
+    + Bump to grub,5 - we're up to date with patches.
+    + Include grub.debian and grub.debian13 entries too, as we derive
+      from Debian.
+    + For Pexip builds let's be consistent with shim and use grub.pexip
+
+ -- Steve McIntyre <steve.mcintyre@pexip.com>  Sat, 18 Jul 2026 10:53:05 -0300
+
 grub2 (2.12-9+pexip25u7+deb13u2) pexip-trixie; urgency=medium
 
   * New upstream release
