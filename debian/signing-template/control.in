@@ -1,8 +1,9 @@
 Source: @pkg_signed@
 Section: admin
 Priority: optional
-Maintainer: GRUB Maintainers <pkg-grub-devel@alioth-lists.debian.net>
-Uploaders: Felix Zielcke <fzielcke@z-51.de>, Jordi Mallach <jordi@debian.org>, Steve McIntyre <93sam@debian.org>, Julian Andres Klode <jak@debian.org>, Mate Kukri <mate.kukri@canonical.com>
+Maintainer: Pexip AS <packaging@pexip.com>
+XSBC-Pexip-Original-Maintainer: GRUB Maintainers <pkg-grub-devel@alioth-lists.debian.net>
+XSBC-Pexip-Original-Uploaders: Felix Zielcke <fzielcke@z-51.de>, Jordi Mallach <jordi@debian.org>, Steve McIntyre <93sam@debian.org>, Julian Andres Klode <jak@debian.org>, Mate Kukri <mate.kukri@canonical.com>
 Standards-Version: 3.9.8
 Build-Depends: debhelper (>= 10.1~),
  sbsigntool [amd64 arm64 i386],
