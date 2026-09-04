@@ -252,7 +252,7 @@ Description: GRand Unified Bootloader, version 2 (Coreboot version)
 
 Package: grub-efi-ia32-bin
 Architecture: any-i386 any-amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (= ${binary:Version}), grub-efi-ia32-unsigned
+Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (= ${binary:Version}), grub-efi-ia32-signed | grub-efi-ia32-unsigned
 Breaks: grub-efi-ia32-signed (<< 1+2.12~rc1)
 Recommends: grub-efi-ia32-signed [i386], efibootmgr [linux-any]
 Replaces: grub2 (<< ${source:Version}), grub-common (<= 1.97~beta2-1), grub-efi, grub-efi-ia32 (<< 1.99-1)
@@ -339,7 +339,7 @@ Description: GRand Unified Bootloader, version 2 (EFI-IA32 signing template)
 
 Package: grub-efi-amd64-bin
 Architecture: i386 kopensolaris-i386 any-amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (= ${binary:Version}), grub-efi-amd64-unsigned
+Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (= ${binary:Version}), grub-efi-amd64-signed | grub-efi-amd64-unsigned
 Recommends: grub-efi-amd64-signed [amd64], efibootmgr [linux-any]
 Replaces: grub2 (<< ${source:Version}), grub-common (<= 1.97~beta2-1), grub-efi-amd64 (<< 1.99-1)
 Breaks: grub-efi-amd64-signed (<< 1+2.12~rc1)
@@ -569,7 +569,7 @@ Description: GRand Unified Bootloader, version 2 (ARM UEFI version)
 
 Package: grub-efi-arm64-bin
 Architecture: any-arm64
-Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (= ${binary:Version}), grub-efi-arm64-unsigned
+Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (= ${binary:Version}), grub-efi-arm64-signed | grub-efi-arm64-unsigned
 Breaks: grub-efi-arm64-signed (<< 1+2.12~rc1)
 Recommends: grub-efi-arm64-signed [arm64], efibootmgr [linux-any]
 Multi-Arch: foreign

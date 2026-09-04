@@ -1,3 +1,10 @@
+grub2 (2.12-9+pexip25u10+deb13u3) pexip-trixie; urgency=medium
+
+  * Tweak dependencies - we don't always need grub-efi-$arch-unsigned
+    when we install grub-efi-$arch-bin.
+
+ -- Steve McIntyre <steve.mcintyre@pexip.com>  Fri, 04 Sep 2026 12:22:25 +0100
+
 grub2 (2.12-9+pexip25u9+deb13u3) pexip-trixie; urgency=medium
 
   * No-change rebuild to get the right SB certificate.
