@@ -150,3 +150,4 @@ cve-2025-jan/fs-xfs-Handle-root-inode-read-failure-in-grub_xfs_mount.patch
 # Pexip patches
 Try-to-make-core-image-writing-more-robust.patch
 permit-non-block-devices.patch
+removable_path_grub_cfg

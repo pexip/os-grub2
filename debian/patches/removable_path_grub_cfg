@@ -1,0 +1,32 @@
+Author: Steve McIntyre <steve.mcintyre@pexip.com>
+Date:   Sun Sep 06 16:26:28 2026 +0100
+
+If writing files to the removable media path, also ensure that we
+write our grub.cfg file there. It would be embarrassing to just drop
+to a grub prompt instead of running the menu.
+
+Index: os-grub2/util/grub-install.c
+===================================================================
+--- os-grub2.orig/util/grub-install.c
++++ os-grub2/util/grub-install.c
+@@ -2255,6 +2255,20 @@ main (int argc, char *argv[])
+ 	    fclose (config_dst_f);
+ 	    free (config_dst);
+ 
++	    /* Also install that file to the removable path if
++	     * needed. */
++	    if (removable || force_extra_removable)
++	      {
++		config_dst = grub_util_path_concat (3, efidir, "BOOT", "grub.cfg");
++		/* No need to make the EFI/BOOT directory - must
++		 * already exist by here. */
++		grub_install_copy_file (load_cfg, config_dst, 1);
++		config_dst_f = grub_util_fopen (config_dst, "ab");
++		fprintf (config_dst_f, "configfile $prefix/grub.cfg\n");
++		fclose (config_dst_f);
++		free (config_dst);
++	      }
++
+ 	    free (csv_file);
+ 	    free (fb_file);
+ 	    free (fb_signed);
