@@ -17,7 +17,7 @@ Index: os-grub2/util/grub-install.c
 +	     * needed. */
 +	    if (removable || force_extra_removable)
 +	      {
-+		config_dst = grub_util_path_concat (3, base_efidir, "BOOT", "grub.cfg");
++		config_dst = grub_util_path_concat (4, base_efidir, "EFI", "BOOT", "grub.cfg");
 +		/* No need to make the EFI/BOOT directory - must
 +		 * already exist by here. */
 +		grub_install_copy_file (load_cfg, config_dst, 1);

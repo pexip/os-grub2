@@ -1,3 +1,9 @@
+grub2 (2.12-9+pexip25u13+deb13u3) pexip-trixie; urgency=medium
+
+  * Really try the correct path for the removable media path.
+
+ -- Steve McIntyre <steve.mcintyre@pexip.com>  Sun, 07 Sep 2026 20:21:04 +0100
+
 grub2 (2.12-9+pexip25u12+deb13u3) pexip-trixie; urgency=medium
 
   * Try the correct path for the removable media path.
